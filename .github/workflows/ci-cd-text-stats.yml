@@ -24,14 +24,16 @@ jobs:
           pytest
           echo "Tests done ✅"
 
-      # Step 4: Deploy
+      # Step 4: Deploy (push deployment.log)
       - name: Deploy
-        if: success()   # runs only if previous steps passed
+        if: success()   # only runs if previous steps passed
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           echo "Deployed at $(date)" >> deployment.log
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add deployment.log
           git commit -m "Auto-deploy update" || echo "No changes to commit"
+          git push https://$PAT_TOKEN@github.com/Vamseedhar159/text-stats-github-actions.git HEAD:main
           echo "Deploy done ✅"
-
