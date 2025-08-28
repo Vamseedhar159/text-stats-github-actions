@@ -16,9 +16,13 @@ jobs:
         run: pip install -r deps.txt
 
       - name: Run Tests
-        run: pytest
+        id: tests
+        run: |
+          pytest
+          echo "tests_passed=true" >> $GITHUB_ENV
 
       - name: Deploy (create log)
+        if: env.tests_passed == 'true'
         run: |
           echo "Deployed at $(date)" >> deployment.log
           git config user.name "GitHub Actions"
