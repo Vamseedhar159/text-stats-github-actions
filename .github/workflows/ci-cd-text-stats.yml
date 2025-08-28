@@ -1,0 +1,28 @@
+name: CI-CD-Text-Stats
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: pip install -r deps.txt
+
+      - name: Run Tests
+        run: pytest
+
+      - name: Deploy (create log)
+        run: |
+          echo "Deployed at $(date)" >> deployment.log
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add deployment.log
+          git commit -m "Auto-deploy update" || echo "No changes to commit"
+          echo "Build, Test, Deploy done ✅"
