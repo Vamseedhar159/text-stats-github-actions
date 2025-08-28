@@ -7,26 +7,31 @@ on:
 jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
-
     steps:
+      # Step 1: Checkout code
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install dependencies
-        run: pip install -r deps.txt
+      # Step 2: Build
+      - name: Build
+        run: |
+          pip install -r deps.txt
+          echo "Build done ✅"
 
-      - name: Run Tests
-        id: tests
+      # Step 3: Test
+      - name: Test
         run: |
           pytest
-          echo "tests_passed=true" >> $GITHUB_ENV
+          echo "Tests done ✅"
 
-      - name: Deploy (create log)
-        if: env.tests_passed == 'true'
+      # Step 4: Deploy
+      - name: Deploy
+        if: success()   # runs only if previous steps passed
         run: |
           echo "Deployed at $(date)" >> deployment.log
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add deployment.log
           git commit -m "Auto-deploy update" || echo "No changes to commit"
-          echo "Build, Test, Deploy done ✅"
+          echo "Deploy done ✅"
+
