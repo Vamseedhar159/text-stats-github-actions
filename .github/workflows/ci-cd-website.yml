@@ -1,0 +1,37 @@
+name: CI-CD Website
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+      # Step 1: Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Build
+      - name: Build
+        run: |
+          echo "Build done ✅"
+
+      # Step 3: Test
+      - name: Test
+        run: |
+          echo "Tests done ✅"
+
+      # Step 4: Deploy to GitHub Pages
+      - name: Deploy Website
+        if: success()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.PAT_TOKEN }}
+          publish_dir: ./
+          publish_branch: gh-pages
+          user_name: 'GitHub Actions'
+          user_email: 'actions@github.com'
+          commit_message: 'Auto-deploy website: $(date)'
