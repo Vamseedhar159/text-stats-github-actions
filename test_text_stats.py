@@ -1,3 +1,4 @@
+#hello
 from text_stats import word_count, char_count
 
 def test_word_count():
